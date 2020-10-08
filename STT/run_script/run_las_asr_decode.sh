@@ -29,10 +29,10 @@ fi
 ##	Careful while modifying lines above.
 ################################################################
 
-TRAIN_FILE=data/ClovaCall/train_ClovaCall.json
-TEST_FILE=data/ClovaCall/test_ClovaCall.json
+TRAIN_FILE=data/KsponSpeech/KsponSpeech_train.json
+TEST_FILE=data/KsponSpeech/KsponSpeech_eval_clean.json
 LABEL_FILE=data/kor_syllable.json
-DATASET_PATH=data/ClovaCall/clean
+DATASET_PATH=data/KsponSpeech
 
 CUDA_DEVICE_ID=0
 
@@ -55,7 +55,7 @@ GPU_SIZE=1
 CPU_SIZE=4
 
 
-TRAIN_INFO="ClovaCall"
+TRAIN_INFO="AIHub_train"
 MODE="test"
 
 ################################################################

@@ -29,10 +29,10 @@ fi
 ##	Careful while modifying lines above.
 ################################################################
 
-TRAIN_FILE=data/ClovaCall/train_ClovaCall.json
-TEST_FILE=data/ClovaCall/test_ClovaCall.json
+TRAIN_FILE=data/KsponSpeech/KsponSpeech_train.json
+TEST_FILE=data/KsponSpeech/KsponSpeech_eval_clean.json
 LABEL_FILE=data/kor_syllable.json
-DATASET_PATH=data/ClovaCall/clean
+DATASET_PATH=data/KsponSpeech
 
 CUDA_DEVICE_ID=0
 
@@ -55,7 +55,7 @@ GPU_SIZE=1
 CPU_SIZE=4
 
 
-TRAIN_INFO="ClovaCall"
+TRAIN_INFO="AIHub_train"
 
 ################################################################
 ##	Careful while modifying lines below.
@@ -84,8 +84,6 @@ fi
 
 CUDA_VISIBLE_DEVICES=$CUDA_DEVICE_ID \
 python -u $TARGET_CODE \
---load-model $True\
---finetune $True\
 --batch_size $BATCH_SIZE \
 --num_workers $CPU_SIZE \
 --num_gpu $GPU_SIZE \
@@ -102,5 +100,6 @@ python -u $TARGET_CODE \
 --cuda --save-folder $CUR_MODEL_PATH --model-path $CUR_MODEL_PATH/final.pth --log-path $LOG_CHILD_PATH | tee $LOG_FILE 
 
 # If you want to continue training from previous model or finetuning, add these commands.
-
+# --load-model $True\
+# --finetune $True\
 # 
