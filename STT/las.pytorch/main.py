@@ -194,11 +194,11 @@ def main():
     parser.add_argument('--model-name', type=str, default='LAS')
     # Dataset
     parser.add_argument('--train-file', type=str,
-                        help='data list about train dataset', default='data/ClovaCall/train_ClovaCall.json')
+                        help='data list about train dataset', default='data/KsponSpeech/KsponSpeech_train.json')
     parser.add_argument('--test-file-list', nargs='*',
-                        help='data list about test dataset', default=['data/ClovaCall/test_ClovCall.json'])
+                        help='data list about test dataset', default=['data/KsponSpeech/KsponSpeech_eval_clean.json'])
     parser.add_argument('--labels-path', default='data/kor_syllable.json', help='Contains large characters over korean')
-    parser.add_argument('--dataset-path', default='data/ClovaCall/clean', help='Target dataset path')
+    parser.add_argument('--dataset-path', default='data/KsponSpeech', help='Target dataset path')
     # Hyperparameters
     parser.add_argument('--rnn-type', default='lstm', help='Type of the RNN. rnn|gru|lstm are supported')
     parser.add_argument('--encoder_layers', type=int, default=3, help='number of layers of model (default: 3)')
