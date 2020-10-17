@@ -29,10 +29,10 @@ fi
 ##	Careful while modifying lines above.
 ################################################################
 
-TRAIN_FILE=data/KsponSpeech/KsponSpeech_train.json
-TEST_FILE=data/KsponSpeech/KsponSpeech_eval_clean.json
+TRAIN_FILE=data/Youtube_test/Youtube_test.json
+TEST_FILE=data/Youtube_test/Youtube_test.json
 LABEL_FILE=data/kor_syllable.json
-DATASET_PATH=data/KsponSpeech
+DATASET_PATH=data/Youtube_test
 
 CUDA_DEVICE_ID=0
 
@@ -55,7 +55,7 @@ GPU_SIZE=1
 CPU_SIZE=4
 
 
-TRAIN_INFO="AIHub_train"
+TRAIN_INFO="ClovaCall_train"
 MODE="test"
 
 ################################################################
@@ -65,8 +65,8 @@ MODE="test"
 MODELS_PATH=models/$TRAIN_INFO
 
 
-CUR_MODEL_PATH=${MODELS_PATH}/${RNN_TYPE}_${ENCODER_SIZE}x${ENCODER_LAYERS}_${DECODER_SIZE}x${DECODER_LAYERS}_${TRAIN_INFO}
-LOG_CHILD_PATH=${LOG_PARENT_PATH}/${RNN_TYPE}_${ENCODER_SIZE}x${ENCODER_LAYERS}_${DECODER_SIZE}x${DECODER_LAYERS}_${TRAIN_INFO}
+CUR_MODEL_PATH=${MODELS_PATH}/${TRAIN_INFO}
+LOG_CHILD_PATH=${LOG_PARENT_PATH}/${TRAIN_INFO}
 
 LOG_FILE=$LOG_CHILD_PATH/run_las_asr_trainer_CUDA${CUDA_DEVICE_ID}.sh.log
 
