@@ -29,11 +29,13 @@ class Youtube_to_Wav():
         if d['status'] == 'finished':
             print('Download finished, now converting...')
 
-    def to_wav(self, link):
+    def to_wav(self, link, save_path='./test.wav',):
+        self.ydl_opts['outtmpl'] = save_path
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
             ydl.download([link])
+        return save_path
 
 if __name__ == '__main__':
     test_link = 'https://youtu.be/GJMNjLRhjnU'
     youtube_to_wav = Youtube_to_Wav()
-    youtube_to_wav.to_wav(test_link)
+    file_path = youtube_to_wav.to_wav(test_link)
