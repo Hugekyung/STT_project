@@ -148,35 +148,40 @@ def evaluate(model, data_loader, criterion, device, save_output=False):
     transcripts_list = []
 
     model.eval()
+    error_lst = []
     with torch.no_grad():
         for i, (data) in tqdm(enumerate(data_loader), total=len(data_loader)):
-            feats, scripts, feat_lengths, script_lengths = data
+            try:
+                feats, scripts, feat_lengths, script_lengths = data
 
-            feats = feats.to(device)
-            scripts = scripts.to(device)
-            feat_lengths = feat_lengths.to(device)
+                feats = feats.to(device)
+                scripts = scripts.to(device)
+                feat_lengths = feat_lengths.to(device)
 
-            src_len = scripts.size(1)
-            target = scripts[:, 1:]
+                src_len = scripts.size(1)
+                target = scripts[:, 1:]
 
-            logit = model(feats, feat_lengths, None, teacher_forcing_ratio=0.0)
-            logit = torch.stack(logit, dim=1).to(device)
-            y_hat = logit.max(-1)[1]
+                logit = model(feats, feat_lengths, None, teacher_forcing_ratio=0.0)
+                logit = torch.stack(logit, dim=1).to(device)
+                y_hat = logit.max(-1)[1]
 
-            logit = logit[:,:target.size(1),:] # cut over length to calculate loss
-            loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
-            total_loss += loss.item()
-            total_num += sum(feat_lengths).item()
+                logit = logit[:,:target.size(1),:] # cut over length to calculate loss
+                loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+                total_loss += loss.item()
+                total_num += sum(feat_lengths).item()
 
-            dist, length, transcripts = get_distance(target, y_hat)
-            cer = float(dist / length) * 100
+                dist, length, transcripts = get_distance(target, y_hat)
+                cer = float(dist / length) * 100
 
-            total_dist += dist
-            total_length += length
-            if save_output == True:
-                transcripts_list += transcripts
-            total_sent_num += target.size(0)
-
+                total_dist += dist
+                total_length += length
+                if save_output == True:
+                    transcripts_list += transcripts
+                total_sent_num += target.size(0)
+            except:
+                error_lst.append(i)
+                pass
+        print(error_lst)
 
     aver_loss = total_loss / total_num
     aver_cer = float(total_dist / total_length) * 100
@@ -196,7 +201,7 @@ def main():
     parser.add_argument('--train-file', type=str,
                         help='data list about train dataset', default='data/KsponSpeech/KsponSpeech_train.json')
     parser.add_argument('--test-file-list', nargs='*',
-                        help='data list about test dataset', default=['data/KsponSpeech/KsponSpeech_eval_clean.json'])
+                        help='data list about test dataset', default=['data/KsponSpeech/KsponSpeech_test.json'])
     parser.add_argument('--labels-path', default='data/kor_syllable.json', help='Contains large characters over korean')
     parser.add_argument('--dataset-path', default='data/KsponSpeech', help='Target dataset path')
     # Hyperparameters
@@ -224,7 +229,7 @@ def main():
     parser.add_argument('--save-folder', default='models', help='Location to save epoch models')
     parser.add_argument('--model-path', default='models/las_final.pth', help='Location to save best validation model')
     parser.add_argument('--log-path', default='log/', help='path to predict log about valid and test dataset')
-    parser.add_argument('--cuda', action='store_true', default=False, help='disables CUDA training')
+    parser.add_argument('--cuda', action='store_true', default=True, help='disables CUDA training')
     parser.add_argument('--seed', type=int, default=123456, help='random seed (default: 123456)')
     parser.add_argument('--mode', type=str, default='train', help='Train or Test')
     parser.add_argument('--load-model', action='store_true', default=False, help='Load model')
@@ -250,7 +255,7 @@ def main():
 
     # Batch Size
     batch_size = args.batch_size * args.num_gpu
-
+    print(batch_size)
     print(">> Train dataset : ", args.train_file)
     trainData_list = []
     with open(args.train_file, 'r', encoding='utf-8') as f:
@@ -330,7 +335,9 @@ def main():
             test_loss, test_cer, transcripts_list = evaluate(model, test_loader, criterion, device, save_output=True)
 
             for line in transcripts_list:
-                print(line)
+                print('STT : ' + line.split('\t')[0])
+                print('정답 : ' + line.split('\t')[1])
+                print('-'*100)
 
             print("Test {} CER : {}".format(test_file, test_cer))
     else:
@@ -340,10 +347,18 @@ def main():
         for epoch in range(begin_epoch, args.epochs):
             train_loss, train_cer = train(train_model, train_loader, criterion, optimizer, device, epoch, train_sampler, args.max_norm, args.teacher_forcing)
 
+            state = {
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict()
+            }
+            torch.save(state, args.model_path.split('.')[0]+'_epoch{}.pth'.format(epoch))
+
             cer_list = []
             for test_file in args.test_file_list:
                 test_loader = testLoader_dict[test_file]
+                print('test_loader')
                 test_loss, test_cer, _ = evaluate(model, test_loader, criterion, device, save_output=False)
+                print('test_loss')
                 test_log = 'Test({name}) Summary Epoch: [{0}]\tAverage Loss {loss:.3f}\tAverage CER {cer:.3f}\t'.format(
                             epoch + 1, name=test_file, loss=test_loss, cer=test_cer)
                 print(test_log)
@@ -358,6 +373,7 @@ def main():
                 }
                 torch.save(state, args.model_path)
                 best_cer = cer_list[0]
+            
 
             print("Shuffling batches...")
             train_sampler.shuffle(epoch)

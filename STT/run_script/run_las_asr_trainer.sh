@@ -30,7 +30,7 @@ fi
 ################################################################
 
 TRAIN_FILE=data/KsponSpeech/KsponSpeech_train.json
-TEST_FILE=data/KsponSpeech/KsponSpeech_eval_clean.json
+TEST_FILE=data/KsponSpeech/KsponSpeech_test.json
 LABEL_FILE=data/kor_syllable.json
 DATASET_PATH=data/KsponSpeech
 
@@ -38,7 +38,7 @@ CUDA_DEVICE_ID=0
 
 # Default
 RNN_TYPE=LSTM
-BATCH_SIZE=32
+BATCH_SIZE=16
 LR=3e-4
 LR_ANNEAL=1.1
 DROPOUT=0.3
@@ -52,7 +52,7 @@ DECODER_LAYERS=2
 DECODER_SIZE=512
 
 GPU_SIZE=1
-CPU_SIZE=4
+CPU_SIZE=0
 
 
 TRAIN_INFO="AIHub_train"
@@ -84,6 +84,7 @@ fi
 
 CUDA_VISIBLE_DEVICES=$CUDA_DEVICE_ID \
 python -u $TARGET_CODE \
+--load-model $True\
 --batch_size $BATCH_SIZE \
 --num_workers $CPU_SIZE \
 --num_gpu $GPU_SIZE \
