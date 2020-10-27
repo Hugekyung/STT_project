@@ -892,3 +892,7 @@
 [2020-10-27 01:43:40,749 INFO] Loading test dataset from ../bert_data\ndm_sample.test.0.bert.pt, number of examples: 1
 [2020-10-27 01:43:40,758 INFO] * number of parameters: 173665025
 [2020-10-27 01:43:41,674 INFO] Validation xent: 100 at step 100
+[2020-10-27 02:08:55,188 INFO] Loading checkpoint from ../models/bert_transformer/model_step_100.pt
+[2020-10-27 02:08:57,584 INFO] Loading test dataset from ../bert_data\ndm_sample.test.0.bert.pt, number of examples: 1
+[2020-10-27 02:08:57,590 INFO] * number of parameters: 173665025
+[2020-10-27 02:08:58,719 INFO] Validation xent: 100 at step 100
