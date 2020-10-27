@@ -1,58 +1,61 @@
-# https://www.geeksforgeeks.org/python-speech-recognition-on-large-audio-files/
-
-# importing libraries 
 import os 
-  
 from pydub import AudioSegment 
 from pydub.silence import split_on_silence 
   
-# a function that splits the audio file into chunks 
-# and applies speech recognition 
-def silence_based_conversion(path='./test.wav'): 
-  
-    # open the audio file stored in 
-    # the local system as a wav file. 
-    wav = AudioSegment.from_wav(path) 
-  
-    # split track where silence is 0.5 seconds  
-    # or more and get chunks 
-    chunks = split_on_silence(wav, min_silence_len = 500, silence_thresh = -16) 
 
-    # create a directory to store the audio chunks. 
-    try: 
-        os.mkdir('audio_chunks') 
-    except(FileExistsError): 
+class long_to_short():
+
+    def __init__(self):
         pass
+
+    def split(self, input_path, output_path, min_silence=600, silence_threshold = -16):
+        # make output directory
+        try:
+            os.mkdir(output_path)
+        except(FileExistsError):
+            pass
+
+        # find wav list and split each wav file
+        file_lst = [x for x in os.listdir(input_path) if x.endswith('.wav')]
+        for f in file_lst:
+            self.long_to_short(os.path.join(input_path, f), output_path, min_silence, silence_threshold)
+
+
+    def long_to_short(self, file, output_path, min_silence, silnece_threshold):
+        # load sound file
+        sound = AudioSegment.from_file(file)
+        dBFS = sound.dBFS
+        # split on silence
+        chunks = split_on_silence(sound, 
+            min_silence_len = min_silence,
+            silence_thresh = dBFS + silnece_threshold,
+            keep_silence = min_silence*0.8
+        )
+
+        # merge chunk files if chunk length is shorter than 2 seconds
+        target_length = 2 * 1000
+        output_chunks = [chunks[0]]
+        for chunk in chunks[1:]:
+            if len(output_chunks[-1]) < target_length:
+                output_chunks[-1] += chunk
+            else:
+                # if the last output chunk is longer than the target length,
+                # we can start a new one
+                output_chunks.append(chunk)
+
+        # save each chunk file
+        filename = file.split('/')[-1][:-4]
+        for i, chunk in enumerate(output_chunks):
+            chunk_name = filename+"_chunk_{0}.wav".format(i)
+            print("saving {}".format(chunk_name)) 
+            # specify the bitrate to be 192 k 
+            chunk.export(output_path + '/' + chunk_name, bitrate ='192k', format ="wav") 
+
   
-    # move into the directory to 
-    # store the audio files. 
-    os.chdir('audio_chunks') 
   
-    # process each chunk 
-    for i, chunk in enumerate(chunks): 
-              
-        # Create 0.5 seconds silence chunk 
-        chunk_silent = AudioSegment.silent(duration=500) 
-  
-        # add 0.5 sec silence to beginning and  
-        # end of audio chunk. This is done so that 
-        # it doesn't seem abruptly sliced. 
-        audio_chunk = chunk_silent + chunk + chunk_silent 
-  
-        # export audio chunk and save it in  
-        # the current directory. 
-        print("saving chunk{0}.wav".format(i)) 
-        # specify the bitrate to be 192 k 
-        audio_chunk.export("./chunk{0}.wav".format(i), bitrate ='192k', format ="wav") 
-  
-        # the name of the newly created chunk 
-        filename = 'chunk'+str(i)+'.wav'
-  
-        print("Processing chunk "+str(i)) 
-  
-    os.chdir('..') 
-  
-  
-if __name__ == '__main__': 
-    print('Enter the audio file path') 
-    silence_based_conversion() 
+if __name__ == '__main__':
+    lts = long_to_short()
+    input_path = '/home/ubuntu/workspace/STT_project_github/STT_project/STT/data/long_to_short'
+    output_path = '/home/ubuntu/workspace/STT_project_github/STT_project/STT/data/long_to_short/test'
+    lts.split(input_path, output_path)
+    
