@@ -35,6 +35,6 @@ class Youtube_to_Wav():
             ydl.download([link])
 
 if __name__ == '__main__':
-    test_link = 'https://youtu.be/GJMNjLRhjnU'
+    test_link = 'https://youtu.be/N547u4ottA4'
     youtube_to_wav = Youtube_to_Wav()
     youtube_to_wav.to_wav(test_link)
