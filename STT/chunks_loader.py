@@ -49,7 +49,7 @@ class Youtube_to_Wav():
         with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
             ydl.download([link])
 
-    def split(self, min_silence=600, silence_threshold = -16):
+    def split(self, min_silence=400, silence_threshold = -18):
         input_path = './'+self.youtube_code
         output_path = os.path.join(self.youtube_code, 'chunks')
         # make output directory
@@ -72,11 +72,11 @@ class Youtube_to_Wav():
         chunks = split_on_silence(sound, 
             min_silence_len = min_silence,
             silence_thresh = dBFS + silnece_threshold,
-            keep_silence = min_silence*0.8
+            keep_silence = min_silence*1.2
         )
 
         # merge chunk files if chunk length is shorter than 2 seconds
-        target_length = 2 * 1000
+        target_length = 3 * 1000
         output_chunks = [chunks[0]]
         for chunk in chunks[1:]:
             if len(output_chunks[-1]) < target_length:
@@ -89,10 +89,13 @@ class Youtube_to_Wav():
         # save each chunk file
         filename = file.split('/')[-1][:-4]
         for i, chunk in enumerate(output_chunks):
-            chunk_name = filename+"_chunk_{0}.wav".format(i)
+            chunk_name = filename+"_chunk_{0:0>3}.wav".format(i)
             print("saving {}".format(chunk_name)) 
             # specify the bitrate to be 192 k 
-            chunk.export(output_path + '/' + chunk_name, bitrate ='192k', format ="wav") 
+            chunk.export(output_path + '/' + chunk_name, bitrate ='192k', format ="wav")
+    
+    def wav_to_pcm(self, file_name):
+        os.system("ffmpeg -i {0}.pcm -f s16le -ac 2 -ar 8000 -acodec pcm_s16le {0}_1.pcm".format(file_name))
 
 
 def link_to_chunks(link):
@@ -103,5 +106,10 @@ def link_to_chunks(link):
     
 
 if __name__ == "__main__":
-    test_link = 'https://youtu.be/N547u4ottA4'
-    link_to_chunks(test_link)
+    # import pandas as pd
+    # csv_file = pd.read_csv('/home/ubuntu/workspace/STT_project_github/STT_project/STT/mbc_news.csv', encoding='utf-8')
+    # urls = csv_file['url']
+    # print(urls)
+    # for idx, url in enumerate(urls):
+    #     link_to_chunks(url)
+    link_to_chunks('https://youtu.be/KBoSZN9mecA')
