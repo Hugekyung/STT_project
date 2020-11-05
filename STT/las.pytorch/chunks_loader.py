@@ -91,25 +91,31 @@ class Youtube_to_Wav():
         for i, chunk in enumerate(output_chunks):
             chunk_name = filename+"_chunk_{0:0>3}.wav".format(i)
             print("saving {}".format(chunk_name)) 
-            # specify the bitrate to be 192 k 
-            chunk.export(output_path + '/' + chunk_name, bitrate ='192k', format ="wav")
+            # specify the bitrate to be 192 k
+            file_name = output_path + '/' + chunk_name
+            chunk.export(file_name, bitrate ='192k', format ="wav")
+            self.wav_to_pcm(file_name[:-4])
+            os.remove(file_name)
     
     def wav_to_pcm(self, file_name):
-        os.system("ffmpeg -i {0}.pcm -f s16le -ac 2 -ar 8000 -acodec pcm_s16le {0}_1.pcm".format(file_name))
+        print(os.getcwd())
+        print('converting {}'.format(file_name))
+        os.system("ffmpeg -i {0}.wav -f s16le -ac 1 -ar 16000 -acodec pcm_s16le {0}.pcm".format(file_name))
 
-
-def link_to_chunks(link):
-    ytw = Youtube_to_Wav()
-    os.chdir(os.path.dirname(__file__)+'/data')
-    ytw.to_wav(link)
-    ytw.split()
+    def link_to_chunks(self, link):
+        print(os.getcwd())
+        os.chdir(os.path.dirname(__file__))
+        os.chdir('../data/youtube')
+        self.to_wav(link)
+        self.split()
     
 
 if __name__ == "__main__":
+    ytw = Youtube_to_Wav()
     # import pandas as pd
-    # csv_file = pd.read_csv('/home/ubuntu/workspace/STT_project_github/STT_project/STT/mbc_news.csv', encoding='utf-8')
+    # csv_file = pd.read_csv('/home/ubuntu/workspace/STT_project_github/STT_project/STT/ytn_news.csv', encoding='utf-8')
     # urls = csv_file['url']
     # print(urls)
     # for idx, url in enumerate(urls):
     #     link_to_chunks(url)
-    link_to_chunks('https://youtu.be/KBoSZN9mecA')
+    ytw.link_to_chunks('https://youtu.be/watch?v=OBdMbLa_-Ic')
