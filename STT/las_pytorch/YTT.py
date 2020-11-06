@@ -14,6 +14,8 @@ limitations under the License.
 #-*- coding: utf-8 -*-
 
 import os
+import sys
+sys.path.append(os.path.dirname(__file__))
 import glob
 import json
 import math
@@ -135,7 +137,6 @@ def evaluate(model, data_loader, criterion, device, save_output=False):
             except Exception as e:
                 error_lst.append(i)
                 pass
-        print(error_lst)
 
     return transcripts_list
 
@@ -185,7 +186,7 @@ def wav_to_text():
 
     # System
     save_folder = 'models'
-    model_path = 'models/AIHub_train/LSTM_512x3_512x2_AIHub_train/final.pth'
+    model_path = 'models/news_finetune/final.pth'
     cuda = True
     seed = 123456
 
