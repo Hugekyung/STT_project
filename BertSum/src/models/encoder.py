@@ -3,8 +3,8 @@ import math
 import torch
 import torch.nn as nn
 
-from model.neural import MultiHeadedAttention, PositionwiseFeedForward
-from model.rnn import LayerNormLSTM
+from BertSum.src.models.neural import MultiHeadedAttention, PositionwiseFeedForward
+from BertSum.src.models.rnn import LayerNormLSTM
 
 
 class Classifier(nn.Module):

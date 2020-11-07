@@ -15,9 +15,9 @@ from os.path import join as pjoin
 from multiprocess import Pool
 from pytorch_pretrained_bert import BertTokenizer
 
-from others.logging import logger
-from others.utils import clean
-from prepro.utils import _get_word_ngrams
+from BertSum.src.others.logging import logger
+from BertSum.src.others.utils import clean
+from BertSum.src.prepro.utils import _get_word_ngrams
 
 from konlpy.tag import Okt
 from konlpy.tag import Kkma

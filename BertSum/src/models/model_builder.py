@@ -4,8 +4,8 @@ import torch.nn as nn
 from pytorch_pretrained_bert import BertModel, BertConfig
 from torch.nn.init import xavier_uniform_
 
-from model.encoder import TransformerInterEncoder, Classifier, RNNEncoder
-from model.optimizers import Optimizer
+from BertSum.src.models.encoder import TransformerInterEncoder, Classifier, RNNEncoder
+from BertSum.src.models.optimizers import Optimizer
 
 
 def build_optim(args, model, checkpoint):

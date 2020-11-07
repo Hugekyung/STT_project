@@ -6,10 +6,10 @@ from tensorboardX import SummaryWriter
 
 import distributed
 # import onmt
-from model.reporter import ReportMgr
-from model.stats import Statistics
-from others.logging import logger
-from others.utils import test_rouge, rouge_results_to_str
+from BertSum.src.models.reporter import ReportMgr
+from BertSum.src.models.stats import Statistics
+from BertSum.src.others.logging import logger
+from BertSum.src.others.utils import test_rouge, rouge_results_to_str
 
 
 def _tally_parameters(model):

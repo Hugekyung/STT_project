@@ -1,32 +1,32 @@
 #encoding=utf-8
 
 from __future__ import division
+from __future__ import absolute_import
 import argparse
 import time
 
 import glob
 import os
-import sys
-# sys.path.append(os.path.dirname(__file__))
-sys.path.insert(0, os.path.dirname(__file__))
+# import sys
+# sys.path.insert(0, os.path.dirname(__file__))
+# sys.path.insert(-1, os.path.dirname(__file__))
 import random
 import signal
 
-from others.logging import init_logger
-from prepro import customized
+from BertSum.src.prepro import customized
 
 
 import torch
 from pytorch_pretrained_bert import BertConfig
 
 import distributed
-from models import data_loader, model_builder
-from model.data_loader import load_dataset
-from model.model_builder import Summarizer
-from model.trainer import build_trainer
-from others.logging import logger, init_logger
 
-
+from BertSum.src import models
+from BertSum.src.models import data_loader, model_builder
+from BertSum.src.models.data_loader import load_dataset
+from BertSum.src.models.model_builder import Summarizer
+from BertSum.src.models.trainer import build_trainer
+from BertSum.src.others.logging import logger, init_logger
 
 def data_create(oracle_mode = 'greedy', raw_path = '../../json_data/', save_path = '../../bert_data/', text = '', log_file='../../logs/preprocess.log', dataset='test', n_cpus=2):
     customized.format_to_lines(raw_path, text)
@@ -83,7 +83,7 @@ def result(args):
 def do_BertSum():
     parser = argparse.ArgumentParser()
     parser.add_argument("-bert_data_path", default='../bert_data/ndm_sample')
-    parser.add_argument("-model_path", default='../model/bert_transformer')
+    parser.add_argument("-model_path", default='../models/bert_transformer')
     parser.add_argument("-result_path", default='../results/cnndm')
     parser.add_argument("-temp_dir", default='../temp')
     parser.add_argument("-bert_config_path", default='../bert_config_uncased_base.json')
@@ -102,7 +102,7 @@ def do_BertSum():
     parser.add_argument('-dataset', default='')
     parser.add_argument('-seed', default=666, type=int)
     parser.add_argument("-test_all", type=str2bool, nargs='?',const=True,default=False)
-    parser.add_argument("-test_from", default='../model/bert_transformer/model_step_1000.pt')
+    parser.add_argument("-test_from", default='../models/bert_transformer/model_step_1000.pt')
     parser.add_argument("-block_trigram", type=str2bool, nargs='?', const=True, default=True)
 
     args = parser.parse_args()
