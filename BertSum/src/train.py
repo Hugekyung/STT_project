@@ -306,11 +306,11 @@ if __name__ == '__main__':
     parser.add_argument("-warmup_steps", default=8000, type=int)
     parser.add_argument("-max_grad_norm", default=0, type=float)
 
-    parser.add_argument("-save_checkpoint_steps", default=5, type=int)
+    parser.add_argument("-save_checkpoint_steps", default=200, type=int)
     parser.add_argument("-accum_count", default=1, type=int)
     parser.add_argument("-world_size", default=1, type=int)
     parser.add_argument("-report_every", default=1, type=int)
-    parser.add_argument("-train_steps", default=100, type=int)
+    parser.add_argument("-train_steps", default=1000, type=int)
     parser.add_argument("-recall_eval", type=str2bool, nargs='?',const=True,default=False)
 
 
@@ -321,7 +321,7 @@ if __name__ == '__main__':
     parser.add_argument('-seed', default=666, type=int)
 
     parser.add_argument("-test_all", type=str2bool, nargs='?',const=True,default=False)
-    parser.add_argument("-test_from", default='../models/bert_transformer/model_step_100.pt')
+    parser.add_argument("-test_from", default='../models/bert_transformer/model_step_1000.pt')
     parser.add_argument("-train_from", default='')
     parser.add_argument("-report_rouge", type=str2bool, nargs='?',const=True,default=True)
     parser.add_argument("-block_trigram", type=str2bool, nargs='?', const=True, default=True)

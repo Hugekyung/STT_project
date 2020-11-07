@@ -2,14 +2,16 @@ import gc
 import glob
 import hashlib
 import itertools
-import json
+
 import os
-import re
+import sys
+sys.path.append(os.path.dirname(__file__))
+
 import subprocess
 import time
 from os.path import join as pjoin
 
-import torch
+
 from multiprocess import Pool
 from pytorch_pretrained_bert import BertTokenizer
 
@@ -17,11 +19,37 @@ from others.logging import logger
 from others.utils import clean
 from prepro.utils import _get_word_ngrams
 
-import pandas as pd
-
+from konlpy.tag import Okt
 from konlpy.tag import Kkma
+import pandas as pd
+import re
+import torch
+import json
 
 
+def clean(x):
+    return x.replace("(","").replace(")","").replace("{","").replace("}","").replace("[","").replace("]","").replace('"',"").replace("'","").replace("=","")
+
+def load_data(text):
+    kkma=Kkma()
+    okt=Okt()
+    article=text
+
+    src_txt=kkma.sentences(article)
+    tgt_txt=kkma.sentences(text)[:3]
+
+    source=[okt.morphs(clean(sen)) for sen in src_txt]
+    tgt=[okt.morphs(clean(sen)) for sen in tgt_txt]
+    return source,tgt
+
+def _format_to_lines(text):
+    source, tgt = load_data(text)
+    return {'src': source, 'tgt': tgt}
+
+def format_to_lines(raw_path, text):
+    os.chdir(os.path.dirname(__file__))
+    with open(raw_path+"cnndm_sample.test.0.json","w") as file:
+        json.dump([_format_to_lines(text)],file)
 
 
 def cal_rouge(evaluated_ngrams, reference_ngrams):
@@ -163,21 +191,21 @@ class BertData():
         return src_subtoken_idxs, labels, segments_ids, cls_ids, src_txt, tgt_txt
 
 
-def format_to_bert(args):
-    if (args.dataset != ''):
-        datasets = [args.dataset]
+def format_to_bert(dataset, raw_path, save_path, n_cpus):
+    if dataset != '':
+        datasets = [dataset]
     else:
         datasets = ['train', 'test']
     for corpus_type in datasets:
         a_lst = []
-        for json_f in glob.glob(pjoin(args.raw_path,  '*' + corpus_type + '.*.json')):
+        for json_f in glob.glob(pjoin(raw_path,  '*' + corpus_type + '.*.json')):
             real_name = json_f.split('/')[-1]
             
-            a_lst.append((json_f, args, pjoin(args.save_path, real_name[12:-4]+'bert.pt')))
+            a_lst.append((json_f, 'args', pjoin(save_path, real_name[12:-4]+'bert.pt')))
         print(a_lst)
-        pool = Pool(args.n_cpus)
-        for d in pool.imap(_format_to_bert, a_lst):
-            pass
+        pool = Pool(n_cpus)
+        # for d in pool.imap(_format_to_bert, a_lst):
+        #     pass
 
         pool.close()
         pool.join()
