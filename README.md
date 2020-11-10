@@ -86,8 +86,9 @@ main.py: 전체 프로세스 실행 코드
 1. '[main.py](http://main.py)' 파일을 실행합니다(wordcloud 결과를 확인하기 위해서는 jupyter notebook 환경에서 실행하기를 권장합니다).
 2. 원하는 영상의 Youtube 링크를 입력합니다.
 
-<iframe width="640" height="360" src="https://www.youtu.be.com/hVwvxnIUysM" frameborder="0" gesture="media" allowfullscreen=""></iframe>
-
+```markdown
+<iframe width="640" height="360" src="https://www.youtube.com/embed/hVwvxnIUysM" frameborder="0" gesture="media" allowfullscreen=""></iframe>
+```
 ## Reference
 
 ### 1. STT Model/Code
