@@ -8,7 +8,7 @@ YTS는 Youtube-to-Summary의 약자이며, 사용자들이 Youtube 영상의 링
 
 본 프로젝트에서 구현한 YTS 모델의 프로세스는 아래와 같습니다.
 
-![Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled.png](Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled.png)
+![image](https://user-images.githubusercontent.com/62092003/98652242-ad94e580-237e-11eb-92aa-57b49c023290.png)
 
 1. Youtube 링크를 기준으로 음성을 추출하고 변환합니다.
 2. 추출한 음성들을 STT(Speech-to-Text) 모델을 활용하여 텍스트로 변환합니다.
@@ -25,7 +25,7 @@ YTS는 Youtube-to-Summary의 약자이며, 사용자들이 Youtube 영상의 링
 - 사전 학습에는 'AIHub 자유발화 음성 데이터'를 활용하였습니다.
 - 목적에 맞게 파인 튜닝을 거칠 경우 모델의 성능을 더욱 높일 수 있습니다.
 
-![Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled%201.png](Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled%201.png)
+![image](https://user-images.githubusercontent.com/62092003/98652311-cbfae100-237e-11eb-8285-90ebffc9e67d.png)
 
 출처: William Chan(2016)
 
@@ -33,7 +33,7 @@ YTS는 Youtube-to-Summary의 약자이며, 사용자들이 Youtube 영상의 링
 
 - 본 프로젝트에서는 Documents Summary 모델로 추출 요약(Extractive Summary) 방식의 TextRank, BertSum 모델을 활용하고 있습니다.
 
-![Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled%202.png](Github%20Readme%20f8dcffbe3277469991d644105932cc64/Untitled%202.png)
+![image](https://user-images.githubusercontent.com/62092003/98652371-e339ce80-237e-11eb-90ed-c68cc75aed7f.png)
 
 - TextRank 모델의 경우 krwordrank, gensim summary 패키지를 활용합니다.
 - BertSum 모델은 사전 학습된 Bert 모델을 기반으로 한 추출 요약 모델입니다. 본문과 요약문 데이터를 활용하여 학습할 수 있습니다.
